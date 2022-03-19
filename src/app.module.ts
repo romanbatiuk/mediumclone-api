@@ -4,7 +4,7 @@ import { AppService } from '@app/app.service';
 import { TagModule } from '@app/tag/tag.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { getPstgresOrmConfig } from '@app/configs/typeorm.config';
+import { typeOrmModuleOptions } from '@app/configs/typeorm.config';
 
 @Module({
 	imports: [
@@ -12,7 +12,9 @@ import { getPstgresOrmConfig } from '@app/configs/typeorm.config';
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],
-			useFactory: getPstgresOrmConfig,
+			useFactory: () => ({
+				...typeOrmModuleOptions,
+			}),
 		}),
 		TagModule,
 	],
