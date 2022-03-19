@@ -7,6 +7,7 @@ export class TagController {
 	@Get()
 	async findAll(): Promise<{ tags: string[] }> {
 		const tags = await this.tagService.findAll();
+		console.log(tags);
 		return {
 			tags: tags.map((tag) => tag.name),
 		};
