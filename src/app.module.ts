@@ -8,7 +8,7 @@ import { typeOrmModuleOptions } from '@app/configs/typeorm.config';
 
 @Module({
 	imports: [
-		ConfigModule.forRoot(),
+		ConfigModule.forRoot({ envFilePath: '.development.env' }),
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],
