@@ -4,7 +4,7 @@ import { genSalt, hash } from 'bcryptjs';
 @Entity({ name: 'users' })
 export class UserEntity {
 	@PrimaryGeneratedColumn()
-	id: number;
+	id: string;
 
 	@Column()
 	username: string;

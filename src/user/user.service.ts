@@ -8,6 +8,7 @@ import { compare } from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 import { UserResponseInterface } from './types/userResponse.interface';
 import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -40,6 +41,12 @@ export class UserService {
 		const newUser = new UserEntity();
 		Object.assign(newUser, createUserDto);
 		return await this.userRepository.save(newUser);
+	}
+
+	async updateUser(userId: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+		const user = await this.findById(userId);
+		Object.assign(user, updateUserDto);
+		return await this.userRepository.save(user);
 	}
 
 	async loginUser(loginUserDto: LoginUserDto): Promise<UserEntity> {
