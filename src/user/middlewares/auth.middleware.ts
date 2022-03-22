@@ -15,6 +15,7 @@ export class AuthMiddleware implements NestMiddleware {
 		// console.log(req.headers);
 		if (!req.headers.authorization) {
 			req.user = null;
+			next();
 			return;
 		}
 
