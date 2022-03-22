@@ -4,8 +4,10 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './user.entity';
 import { sign } from 'jsonwebtoken';
+import { compare } from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 import { UserResponseInterface } from './types/userResponse.interface';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class UserService {
@@ -38,6 +40,28 @@ export class UserService {
 		const newUser = new UserEntity();
 		Object.assign(newUser, createUserDto);
 		return await this.userRepository.save(newUser);
+	}
+
+	async loginUser(loginUserDto: LoginUserDto): Promise<UserEntity> {
+		const errorResponse = { errors: { 'Email or password': ['is invalid'] } };
+		const { email, password } = loginUserDto;
+
+		const user = await this.userRepository.findOne(
+			{ email },
+			{ select: ['id', 'username', 'email', 'bio', 'image', 'password'] },
+		);
+		if (!user) {
+			throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+		}
+
+		const isPasswordCorrect = await compare(password, user.password);
+		if (!isPasswordCorrect) {
+			throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+		}
+
+		delete user.password;
+
+		return user;
 	}
 
 	generateJwt(user: UserEntity): string {
