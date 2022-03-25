@@ -1,9 +1,10 @@
 import { User } from '@app/user/decorators/user.decorator';
 import { AuthGuard } from '@app/user/guards/auth.guard';
 import { UserEntity } from '@app/user/user.entity';
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
+import { UpdateArticleDto } from './dto/update-artilce.dto';
 import { ArticleResponseInterface } from './types/ArticleResponseInterface';
 
 @Controller('articles')
@@ -23,6 +24,21 @@ export class ArticleController {
 	@Get(':slug')
 	async findByAlias(@Param('slug') slug: string): Promise<ArticleResponseInterface> {
 		const article = await this.articleService.findByAlias(slug);
+		return this.articleService.buildArticleResponse(article);
+	}
+
+	@Put(':slug')
+	@UseGuards(AuthGuard)
+	async updateArticleByAlias(
+		@User('id') currentUserId: string,
+		@Param('slug') slug: string,
+		@Body('article') updateArticleDto: UpdateArticleDto,
+	): Promise<ArticleResponseInterface> {
+		const article = await this.articleService.updateArticleByAlias(
+			slug,
+			updateArticleDto,
+			currentUserId,
+		);
 		return this.articleService.buildArticleResponse(article);
 	}
 
