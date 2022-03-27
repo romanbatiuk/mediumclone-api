@@ -15,7 +15,7 @@ export const typeOrmModuleOptions: TypeOrmModuleOptions = {
 	// autoLoadEntities: true,
 };
 
-export const OrmConfig = {
+const OrmConfig = {
 	...typeOrmModuleOptions,
 	// migrationsTableName: 'migrations',
 	migrations: [__dirname + '/../migrations/**/*{.ts,.js}'],
